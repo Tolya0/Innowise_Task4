@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Мои заказы — ShopApp.">
+    <title>ShopApp — Мои заказы</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a th:href="@{/home}" class="nav-logo">🛒 ShopApp</a>
+        <div class="nav-links">
+            <a th:href="@{/home}" class="nav-link">Каталог</a>
+            <a th:href="@{/orders}" class="nav-link active">Мои заказы</a>
+        </div>
+        <div class="nav-auth">
+            <span class="nav-username" th:text="'Привет, ' + ${user.username} + '!'"></span>
+            <a th:href="@{/logout}" class="btn btn-outline">Выйти</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container" style="padding-top: 2rem;">
+    <div class="section-header">
+        <h1 class="section-title" th:text="${user.admin} ? 'Все заказы' : 'Мои заказы'">Мои заказы</h1>
+    </div>
+
+    <div class="alert alert-success" th:if="${param.success != null}" th:text="${param.success}"></div>
+    <div class="alert alert-error"   th:if="${param.error != null}"   th:text="${param.error}"></div>
+
+    <div class="orders-table-wrapper" th:if="${not #lists.isEmpty(orders)}">
+        <table class="orders-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th th:if="${user.admin}">Пользователь</th>
+                <th>Товар</th>
+                <th>Кол-во</th>
+                <th>Сумма</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}" th:classappend="${order.status.name() == 'CANCELLED'} ? 'row-cancelled' : ''">
+                <td th:text="${order.id}">1</td>
+                <td th:if="${user.admin}" th:text="${order.username}">user</td>
+                <td th:text="${order.productName}">Товар</td>
+                <td th:text="${order.quantity}">1</td>
+                <td th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)} + ' $'">0 $</td>
+                <td>
+                    <span class="status-badge"
+                          th:classappend="${order.status.name() == 'PENDING'} ? 'status-pending' :
+                                          (${order.status.name() == 'CONFIRMED'} ? 'status-confirmed' : 'status-cancelled')"
+                          th:text="${order.status.name() == 'PENDING'} ? 'Ожидает' :
+                                    (${order.status.name() == 'CONFIRMED'} ? 'Подтверждён' : 'Отменён')">
+                        Статус
+                    </span>
+                </td>
+                <td th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
+                <td>
+                    <form th:action="@{/orders}" method="post"
+                          th:if="${order.status.name() != 'CANCELLED'}">
+                        <input type="hidden" name="action" value="cancel">
+                        <input type="hidden" name="orderId" th:value="${order.id}">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Отменить заказ?')">Отменить</button>
+                    </form>
+                    <span th:if="${order.status.name() == 'CANCELLED'}" class="text-muted">—</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(orders)}">
+        <div class="empty-icon">📋</div>
+        <h3>Заказов нет</h3>
+        <p>Вы ещё не оформили ни одного заказа.</p>
+        <a th:href="@{/home}" class="btn btn-primary">Перейти в каталог</a>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>© 2026 ShopApp. Все права защищены.</p>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

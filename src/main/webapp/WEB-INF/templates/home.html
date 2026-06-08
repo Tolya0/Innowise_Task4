@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ShopApp — каталог товаров, заказы онлайн.">
+    <title>ShopApp — Каталог</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a th:href="@{/home}" class="nav-logo">🛒 ShopApp</a>
+        <div class="nav-links">
+            <a th:href="@{/home}" class="nav-link active">Каталог</a>
+            <a th:href="@{/orders}" class="nav-link" th:if="${user != null}">Мои заказы</a>
+        </div>
+        <div class="nav-auth">
+            <span class="nav-username" th:if="${user != null}" th:text="'Привет, ' + ${user.username} + '!'"></span>
+            <a th:href="@{/logout}" class="btn btn-outline" th:if="${user != null}">Выйти</a>
+            <a th:href="@{/login}" class="btn btn-primary" th:if="${user == null}">Войти</a>
+            <a th:href="@{/register}" class="btn btn-outline" th:if="${user == null}">Регистрация</a>
+        </div>
+    </div>
+</nav>
+
+
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Лучшие товары<br><span class="gradient-text">по лучшим ценам</span></h1>
+        <p class="hero-subtitle">Современная электроника и гаджеты с быстрой доставкой</p>
+    </div>
+    <div class="hero-decoration"></div>
+</section>
+
+
+<div class="container" th:if="${param.error != null}">
+    <div class="alert alert-error" th:text="${param.error}"></div>
+</div>
+
+
+<main class="container">
+    <div class="section-header">
+        <h2 class="section-title">Каталог товаров</h2>
+        <a th:if="${user != null and user.admin}" th:href="@{/product(action='add')}" class="btn btn-primary">+ Добавить товар</a>
+    </div>
+
+    <div class="product-grid" th:if="${not #lists.isEmpty(products)}">
+        <div class="product-card" th:each="product : ${products}">
+            <div class="product-badge" th:if="${product.stock == 0}">Нет в наличии</div>
+            <div class="product-badge badge-low" th:if="${product.stock > 0 and product.stock <= 5}">Последние!</div>
+            <div class="product-icon">📦</div>
+            <h3 class="product-name" th:text="${product.name}">Название товара</h3>
+            <p class="product-description" th:text="${product.description}">Описание товара...</p>
+            <div class="product-footer">
+                <span class="product-price" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + ' $'">0.00 $</span>
+                <span class="product-stock" th:text="'В наличии: ' + ${product.stock}">В наличии: 0</span>
+            </div>
+            <div class="product-actions">
+                <a th:href="@{/product(id=${product.id})}" class="btn btn-primary btn-sm"
+                   th:classappend="${product.stock == 0} ? 'btn-disabled' : ''">
+                    Подробнее
+                </a>
+                <div th:if="${user != null and user.admin}" class="admin-actions">
+                    <a th:href="@{/product(action='edit', id=${product.id})}" class="btn btn-outline btn-sm">✏️ Ред.</a>
+                    <form th:action="@{/product}" method="post" style="display:inline;">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" th:value="${product.id}">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Удалить товар?')">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${#lists.isEmpty(products)}">
+        <div class="empty-icon">📭</div>
+        <h3>Товары не найдены</h3>
+        <p>В каталоге пока нет товаров.</p>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>© 2026 ShopApp. Все права защищены.</p>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

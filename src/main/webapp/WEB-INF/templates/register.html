@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Регистрация в ShopApp.">
+    <title>ShopApp — Регистрация</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">🛒</div>
+        <h1 class="auth-title">Создать аккаунт</h1>
+        <p class="auth-subtitle">Присоединяйтесь к ShopApp</p>
+
+        <div class="alert alert-error" th:if="${param.error != null}" th:text="${param.error}"></div>
+
+        <form id="register-form" th:action="@{/register}" method="post" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="username" class="form-label">Имя пользователя</label>
+                <input type="text" id="username" name="username" class="form-input"
+                       placeholder="Минимум 3 символа" required minlength="3" autocomplete="username">
+                <span class="form-error" id="username-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input"
+                       placeholder="your@email.com" required autocomplete="email">
+                <span class="form-error" id="email-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <div class="input-with-toggle">
+                    <input type="password" id="password" name="password" class="form-input"
+                           placeholder="Минимум 6 символов" required minlength="6" autocomplete="new-password">
+                    <button type="button" class="toggle-password" onclick="togglePassword('password')">👁</button>
+                </div>
+                <div class="password-strength" id="password-strength"></div>
+                <span class="form-error" id="password-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label">Подтвердите пароль</label>
+                <div class="input-with-toggle">
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input"
+                           placeholder="Повторите пароль" required minlength="6" autocomplete="new-password">
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">👁</button>
+                </div>
+                <span class="form-error" id="confirm-error"></span>
+            </div>
+            <button type="submit" id="register-btn" class="btn btn-primary btn-full">Зарегистрироваться</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Уже есть аккаунт? <a th:href="@{/login}" class="auth-link">Войти</a></p>
+        </div>
+    </div>
+
+    <div class="auth-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

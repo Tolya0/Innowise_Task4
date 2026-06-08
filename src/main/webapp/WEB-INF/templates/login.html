@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Вход в систему ShopApp.">
+    <title>ShopApp — Вход</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">🛒</div>
+        <h1 class="auth-title">Добро пожаловать</h1>
+        <p class="auth-subtitle">Войдите в свой аккаунт</p>
+
+
+        <div class="alert alert-success" th:if="${param.success != null}" th:text="${param.success}"></div>
+
+        <div class="alert alert-error" th:if="${param.error != null}" th:text="${param.error}"></div>
+
+        <form id="login-form" th:action="@{/login}" method="post" class="auth-form" novalidate>
+            <div class="form-group">
+                <label for="username" class="form-label">Имя пользователя</label>
+                <input type="text" id="username" name="username" class="form-input"
+                       placeholder="Введите имя пользователя" required minlength="3" autocomplete="username">
+                <span class="form-error" id="username-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <div class="input-with-toggle">
+                    <input type="password" id="password" name="password" class="form-input"
+                           placeholder="Введите пароль" required minlength="6" autocomplete="current-password">
+                    <button type="button" class="toggle-password" onclick="togglePassword('password')">👁</button>
+                </div>
+                <span class="form-error" id="password-error"></span>
+            </div>
+            <button type="submit" id="login-btn" class="btn btn-primary btn-full">Войти</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Нет аккаунта? <a th:href="@{/register}" class="auth-link">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <div class="auth-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

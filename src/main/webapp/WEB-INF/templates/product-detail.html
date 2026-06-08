@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name} + ' — ShopApp'">Товар — ShopApp</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a th:href="@{/home}" class="nav-logo">🛒 ShopApp</a>
+        <div class="nav-links">
+            <a th:href="@{/home}" class="nav-link">Каталог</a>
+            <a th:href="@{/orders}" class="nav-link" th:if="${user != null}">Мои заказы</a>
+        </div>
+        <div class="nav-auth">
+            <span class="nav-username" th:if="${user != null}" th:text="'Привет, ' + ${user.username} + '!'"></span>
+            <a th:href="@{/logout}" class="btn btn-outline" th:if="${user != null}">Выйти</a>
+            <a th:href="@{/login}" class="btn btn-primary" th:if="${user == null}">Войти</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container" style="padding-top: 2rem;">
+    <a th:href="@{/home}" class="back-link">← Назад в каталог</a>
+
+    <div class="alert alert-error" th:if="${param.error != null}" th:text="${param.error}"></div>
+
+    <div class="product-detail-card">
+        <div class="product-detail-icon">📦</div>
+        <div class="product-detail-info">
+            <h1 class="product-detail-name" th:text="${product.name}">Название товара</h1>
+            <p class="product-detail-description" th:text="${product.description}">Описание товара</p>
+
+            <div class="product-detail-meta">
+                <div class="product-detail-price" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + ' $'">0.00 $</div>
+                <div class="stock-info">
+                    <span class="stock-badge" th:classappend="${product.stock > 0} ? 'in-stock' : 'out-of-stock'"
+                          th:text="${product.stock > 0} ? 'В наличии: ' + ${product.stock} + ' шт.' : 'Нет в наличии'">
+                        В наличии
+                    </span>
+                </div>
+            </div>
+
+            <form id="order-form" th:if="${user != null and !user.admin and product.stock > 0}"
+                  th:action="@{/product}" method="post" class="order-form" novalidate>
+                <input type="hidden" name="action" value="order">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <div class="form-group">
+                    <label for="quantity" class="form-label">Количество</label>
+                    <div class="quantity-control">
+                        <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+                        <input type="number" id="quantity" name="quantity" class="form-input qty-input"
+                               value="1" min="1" th:max="${product.stock}" required>
+                        <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                    <span class="form-error" id="qty-error"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="order-btn">
+                    🛒 Заказать
+                </button>
+            </form>
+
+            <div th:if="${user == null}" class="login-prompt">
+                <p>Чтобы оформить заказ, <a th:href="@{/login}" class="auth-link">войдите в систему</a>.</p>
+            </div>
+            <div th:if="${product.stock == 0}" class="login-prompt">
+                <p>Этот товар временно недоступен.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>© 2026 ShopApp. Все права защищены.</p>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="~{fragments/layout :: title(${pageTitle})}">Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" th:replace="~{fragments/layout :: navbar}"></nav>
+    <main class="main-content" th:replace="~{fragments/layout :: content}"></main>
+    <footer class="footer" th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
