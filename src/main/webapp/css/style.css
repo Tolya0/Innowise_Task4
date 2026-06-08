@@ -284,6 +284,7 @@ a { text-decoration: none; color: inherit; }
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);
     opacity: 0;
     transition: opacity var(--transition);
+    pointer-events: none;
 }
 
 .product-card:hover {

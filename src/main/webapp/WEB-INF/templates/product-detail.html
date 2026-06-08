@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <form id="order-form" th:if="${user != null and !user.admin and product.stock > 0}"
+            <form id="order-form" th:if="${user != null and not user.admin and product.stock > 0}"
                   th:action="@{/product}" method="post" class="order-form" novalidate>
                 <input type="hidden" name="action" value="order">
                 <input type="hidden" name="productId" th:value="${product.id}">
